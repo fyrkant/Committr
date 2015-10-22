@@ -3,7 +3,9 @@
 class AppSettings
 {
 
-    const DATA_PATH = "./../secret/";
+    const DEVELOPING = true;
+
+    const DATA_PATH = "";
 
     // If set to true, the application will use the MongoDB
     // specified under this. If set to false it will save registered
