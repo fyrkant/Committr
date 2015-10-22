@@ -1,0 +1,18 @@
+<?php
+
+class AppSettings
+{
+
+    const DATA_PATH = "./../secret/";
+
+    // If set to true, the application will use the MongoDB
+    // specified under this. If set to false it will save registered
+    // users in files on server (at the specified data path).
+    const USE_DB = true;
+
+    // MongoDB
+    const MONGO_USERNAME = "username";
+    const MONGO_PASSWORD = "password";
+    const MONGO_IP = "server adress";
+
+}
