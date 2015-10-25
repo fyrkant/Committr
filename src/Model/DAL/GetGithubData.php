@@ -6,14 +6,18 @@
  * Time: 11:44
  */
 
-namespace Committr\Model;
+namespace Committr\Model\DAL;
 
 
 class GetGithubData
 {
 
+    private $data;
+
     public function getContentFromGithub($url)
     {
+        $content = null;
+
         try {
             $curlHandle = curl_init();
 
@@ -40,8 +44,14 @@ class GetGithubData
 
         }
 
+        $this->data = $content;
 
         return $content;
+
+    }
+
+    public function getReposJSON($content)
+    {
 
     }
 

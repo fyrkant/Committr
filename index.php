@@ -13,10 +13,13 @@ $db = new Committr\Model\DAL\MongoDAL();
 $layout = new Committr\View\LayoutView();
 $layout->renderPage();
 
-$data = new \Committr\Model\GetGithubData();
+$data = new \Committr\Model\DAL\GetGithubData();
 $dataTest = $data->getContentFromGithub('https://api.github.com/users/mw222rs/repos');
 
+foreach (json_decode($dataTest, 1) as $repo) {
+    echo $repo['name'] . "<br />";
+    echo $repo['description'] . "<br /><br />";
+}
 
 
-
-var_dump($data->getContentFromGithub('https://api.github.com/repos/mw222rs/committr/commits'));
+var_dump($dataTest);
