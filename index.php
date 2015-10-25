@@ -11,15 +11,24 @@ if (\AppSettings::DEBUGGING) {
 $db = new Committr\Model\DAL\MongoDAL();
 
 $layout = new Committr\View\LayoutView();
-$layout->renderPage();
 
-$data = new \Committr\Model\DAL\GetGithubData();
-$dataTest = $data->getContentFromGithub('https://api.github.com/users/mw222rs/repos');
+$api = new \Committr\Model\DAL\GithubAPI("mw222rs");
+$dataTest = $api->getPayload(true);
 
-foreach (json_decode($dataTest, 1) as $repo) {
-    echo $repo['name'] . "<br />";
-    echo $repo['description'] . "<br /><br />";
-}
+$repoList = new \Committr\Model\RepoList();
+$loginView = new \Committr\View\LoginView();
 
+$controller = new \Committr\Controller\MainController($repoList, $loginView);
+$isLoggedIn = $controller->doControl();
 
-var_dump($dataTest);
+$repoListView = new \Committr\View\RepoListView($repoList);
+
+$layout->renderPage($isLoggedIn, $loginView, $repoListView);
+//
+//foreach (json_decode($dataTest, 1) as $repo) {
+//    echo $repo['name'] . "<br />";
+//    echo $repo['description'] . "<br /><br />";
+//}
+//
+//
+//var_dump($dataTest);
