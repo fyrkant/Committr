@@ -23,7 +23,7 @@ class GithubAPI
     {
     }
 
-    public function authorize($code)
+    private function authenticate($code)
     {
         $settings = array(
             "client_id"     => \AppSettings::GITHUB_API_CLIENT_ID,
@@ -74,7 +74,7 @@ class GithubAPI
 
     }
 
-    public function getUserFromToken($token)
+    private function getUserFromToken($token)
     {
 
         $headerSettings = array(
@@ -119,6 +119,14 @@ class GithubAPI
         $userURL = $JSON["html_url"];
 
         $user = new User($userName, $userID, $userAvatar, $userURL);
+
+        return $user;
+    }
+
+    public function authenticateAndGetUser($code)
+    {
+        $token = $this->authenticate($code);
+        $user = $this->getUserFromToken($token);
 
         return $user;
     }

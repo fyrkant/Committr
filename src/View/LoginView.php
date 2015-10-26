@@ -9,42 +9,54 @@
 namespace Committr\View;
 
 
+use Committr\Model\UserClient;
+
 class LoginView
 {
 
-    private static $name = "LoginView::Name";
-    private static $login = "LoginView::Login";
+    private static $logout = "LoginView::Logout";
     private static $oauth = "LoginView::OAuth";
     private static $oauthGET = "code";
 
-    public function response()
+    public function response($isLoggedIn)
     {
         $response = null;
 
+        if (@$isLoggedIn) {
 
-        $response = $this->generateLoginButton();
+            $response = $this->generateLogoutButton();
 
+        } else {
+
+            $response = $this->generateLoginButton();
+        }
 
         return $response;
+    }
+
+    private function generateLogoutButton()
+    {
+        return '
+        <form method="post">
+          <input type="submit" name="' . self::$logout . '" value="Login with GitHub" />
+        </form>
+        ';
     }
 
     private function generateLoginButton()
     {
         return '
         <form method="post">
-          <fieldset>
-			<legend>Login - enter Github username</legend>
-
-			  <label for="' . self::$name . '">Username :</label>
-			  <input type="text" id="' . self::$name . '" name="' . self::$name . '" />
-
-			  <input type="submit" name="' . self::$oauth . '" value="go to github" />
-
-			  <input type="submit" name="' . self::$login . '" value="login" />
-			</fieldset>
+          <input type="submit" name="' . self::$oauth . '" value="Login with GitHub" />
         </form>
-
         ';
+    }
+
+    public function getUserClient()
+    {
+        $userClient = new UserClient($_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
+
+        return $userClient;
     }
 
     public function userWantToAuthenticate()
@@ -60,24 +72,6 @@ class LoginView
     public function getOAuthCode()
     {
         return $_GET[ self::$oauthGET ];
-    }
-
-    public function userTriedLogin()
-    {
-        if (isset($_POST[ self::$login ])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function getNameInput()
-    {
-        if (!isset($_POST[ self::$name ])) {
-            return "";
-        } else {
-            return filter_var(trim($_POST[ self::$name ]), FILTER_SANITIZE_STRING);
-        }
     }
 
     public function githubRedirect()

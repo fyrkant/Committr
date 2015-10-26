@@ -12,14 +12,18 @@ $db = new Committr\Model\DAL\MongoDAL();
 
 $layout = new Committr\View\LayoutView();
 
+$loginModel = new \Committr\Model\LoginModel();
+
 //$api = new \Committr\Model\DAL\GithubAPI("mw222rs");
 //$dataTest = $api->getPayload(true);
 
 $repoList = new \Committr\Model\RepoList();
 $loginView = new \Committr\View\LoginView();
 
-$controller = new \Committr\Controller\MainController($repoList, $loginView);
-$isLoggedIn = $controller->doControl();
+$controller = new \Committr\Controller\MainController($repoList, $loginView, $loginModel);
+$controller->doControl();
+
+$isLoggedIn = $controller->getIsLoggedIn();
 
 $repoListView = new \Committr\View\RepoListView($repoList);
 
