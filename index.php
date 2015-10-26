@@ -12,8 +12,8 @@ $db = new Committr\Model\DAL\MongoDAL();
 
 $layout = new Committr\View\LayoutView();
 
-$api = new \Committr\Model\DAL\GithubAPI("mw222rs");
-$dataTest = $api->getPayload(true);
+//$api = new \Committr\Model\DAL\GithubAPI("mw222rs");
+//$dataTest = $api->getPayload(true);
 
 $repoList = new \Committr\Model\RepoList();
 $loginView = new \Committr\View\LoginView();
