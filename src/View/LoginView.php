@@ -17,39 +17,57 @@ class LoginView
     private static $logout = "LoginView::Logout";
     private static $oauth = "LoginView::OAuth";
     private static $oauthGET = "code";
+    /**
+     * @var
+     */
+    private $messenger;
+
+    public function __construct(Messenger $messenger)
+    {
+        $this->messenger = $messenger;
+    }
 
     public function response($isLoggedIn)
     {
+        $message = $this->messenger->getMessage();
+
         $response = null;
 
-        if (@$isLoggedIn) {
+        if ($isLoggedIn) {
 
-            $response = $this->generateLogoutButton();
+            $response = $this->generateLogoutButton($message);
 
         } else {
 
-            $response = $this->generateLoginButton();
+            $response = $this->generateLoginButton($message);
         }
 
         return $response;
     }
 
-    private function generateLogoutButton()
+    private function generateLogoutButton($message)
     {
         return '
         <form method="post">
-          <input type="submit" name="' . self::$logout . '" value="Login with GitHub" />
+          <p>' . $message . '</p>
+          <input type="submit" name="' . self::$logout . '" value="Logout" />
         </form>
         ';
     }
 
-    private function generateLoginButton()
+    private function generateLoginButton($message)
     {
         return '
         <form method="post">
+          <p>' . $message . '</p>
           <input type="submit" name="' . self::$oauth . '" value="Login with GitHub" />
         </form>
         ';
+    }
+
+    public function setMessageKey($key)
+    {
+        $this->messenger->setMessageKey($key);
     }
 
     public function getUserClient()
@@ -62,6 +80,11 @@ class LoginView
     public function userWantToAuthenticate()
     {
         return isset($_POST[ self::$oauth ]);
+    }
+
+    public function userWantsToLogOut()
+    {
+        return isset($_POST[ self::$logout ]);
     }
 
     public function userHasOAuthCode()
@@ -77,6 +100,13 @@ class LoginView
     public function githubRedirect()
     {
         header("Location: " . "https://github.com/login/oauth/authorize?client_id=" . \AppSettings::GITHUB_API_CLIENT_ID);
+        die();
+    }
+
+    public function redirect()
+    {
+        $actual = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+        header("Location: $actual");
         die();
     }
 

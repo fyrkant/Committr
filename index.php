@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once("AppSettings.php");
 require_once("vendor/autoload.php");
 
@@ -18,7 +20,8 @@ $loginModel = new \Committr\Model\LoginModel();
 //$dataTest = $api->getPayload(true);
 
 $repoList = new \Committr\Model\RepoList();
-$loginView = new \Committr\View\LoginView();
+$messenger = new \Committr\View\Messenger();
+$loginView = new \Committr\View\LoginView($messenger);
 
 $controller = new \Committr\Controller\MainController($repoList, $loginView, $loginModel);
 $controller->doControl();

@@ -20,8 +20,9 @@ class LoginModel
             return false;
         } else {
             $sessionUser = unserialize($_SESSION[ self::$loginSessionLocation ]);
+            $loggedInClient = $sessionUser->getUserClient();
 
-            if ($currentUser->isSame($sessionUser)) {
+            if ($currentUser->isSame($loggedInClient)) {
                 return true;
             }
 
@@ -35,9 +36,14 @@ class LoginModel
         $_SESSION[ self::$loginSessionLocation ] = null;
     }
 
-    public function login(UserClient $currentUser)
+    public function login(User $user)
     {
-        $_SESSION[ self::$loginSessionLocation ] = serialize($currentUser);
+        $_SESSION[ self::$loginSessionLocation ] = serialize($user);
+    }
+
+    public function getLoggedInUser()
+    {
+        return unserialize($_SESSION[ self::$loginSessionLocation ]);
     }
 
 }

@@ -18,6 +18,7 @@ class GithubAPI
 
     private $data;
     private $username;
+    private $repos;
 
     public function __construct()
     {
@@ -118,7 +119,7 @@ class GithubAPI
         $userAvatar = $JSON["avatar_url"];
         $userURL = $JSON["html_url"];
 
-        $user = new User($userName, $userID, $userAvatar, $userURL);
+        $user = new User($userName, $userID, $userAvatar, $userURL, $token);
 
         return $user;
     }
@@ -176,43 +177,17 @@ class GithubAPI
 
     }
 
-    public function getReposJSON($content)
+
+    public function populateRepoList(RepoList $repoList, User $user)
     {
+        $this->getPayload($user->getName(), true);
 
-    }
-
-    public function test()
-    {
-        $plugin = "overlay";
-        $pathToCache = $_SERVER['DOCUMENT_ROOT'] . '/plugin-cache/';
-        $fileCache = $plugin . '-github.txt';
-        $githubJSON = $this->getRepositoryJSONData($pathToCache . $fileCache, $plugin);
-
-
-    }
-
-    public function getRepositoryJSONData($file, $plugin)
-    {
-        $currrentTime = time();
-        $expireTime = 24 * 60 * 60;
-        $fileTime = filemtime($file);
-
-        if (file_exists($file) && ($currrentTime - $expireTime < $fileTime)) {
-            return json_decode(file_get_contents($file));
-        } else {
-            $JSON = array();
-
-        }
-    }
-
-    public function populateRepoList(RepoList $repoList)
-    {
         $JSON = json_decode($this->data, 1);
 
         foreach ($JSON as $repo) {
             $name = $repo["name"];
             $description = $repo["description"];
-            $url = $repo["url"];
+            $url = $repo["html_url"];
             $toSave = new Repo($name, $description, $url);
 
             $repoList->addToList($toSave);

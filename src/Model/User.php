@@ -16,14 +16,17 @@ class User
     private $id;
     private $avatar;
     private $githubUrl;
+    private $userClient;
+    private $token;
 
-    public function __construct($name, $id, $avatar, $githubUrl)
+    public function __construct($name, $id, $avatar, $githubUrl, $token)
     {
 
         $this->name = $name;
         $this->id = $id;
         $this->avatar = $avatar;
         $this->githubUrl = $githubUrl;
+        $this->token = $token;
     }
 
     /**
@@ -57,5 +60,23 @@ class User
     {
         return $this->name;
     }
+
+    /**
+     * @return UserClient
+     */
+    public function getUserClient()
+    {
+        return $this->userClient;
+    }
+
+    /**
+     * @param UserClient $userClient
+     */
+    public function setUserClient(UserClient $userClient)
+    {
+        $this->userClient = $userClient;
+    }
+
+
 
 }

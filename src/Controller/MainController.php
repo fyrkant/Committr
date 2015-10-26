@@ -16,9 +16,6 @@ use Committr\View\LoginView;
 
 class MainController
 {
-
-    private $isLoggedIn;
-
     /**
      * @var RepoList
      */
@@ -44,20 +41,41 @@ class MainController
 
     public function doControl()
     {
+        $currentUser = $this->loginView->getUserClient();
+        $isLoggedIn = $this->loginModel->isLoggedIn($currentUser);
         $this->api = new GithubAPI();
 
-        $currentUser = $this->loginView->getUserClient();
+        if ($isLoggedIn) {
 
-        $this->isLoggedIn = $this->loginModel->isLoggedIn($currentUser);
+            $user = $this->loginModel->getLoggedInUser();
+
+            $this->api->populateRepoList($this->repoList, $user);
+        } else {
+
+        }
 
 
-        if ($this->loginView->userHasOAuthCode()) {
+
+        if ($isLoggedIn && $this->loginView->userWantsToLogOut()) {
+            $this->loginModel->logOut();
+            $this->loginView->setMessageKey("Logout");
+            $this->loginView->redirect();
+        }
+
+
+        if ($this->loginView->userHasOAuthCode() && !$isLoggedIn) {
             $code = $this->loginView->getOAuthCode();
 
             $user = $this->api->authenticateAndGetUser($code);
+            $user->setUserClient($currentUser);
 
-            var_dump($user);
-            die();
+            $this->loginModel->login($user);
+            $this->loginView->setMessageKey("Login");
+            $this->loginView->redirect();
+
+
+//            var_dump($user);
+//            die();
         }
 
 
@@ -69,7 +87,9 @@ class MainController
 
     public function getIsLoggedIn()
     {
-        return $this->isLoggedIn;
+        $currentUser = $this->loginView->getUserClient();
+
+        return $this->loginModel->isLoggedIn($currentUser);
     }
 
 }

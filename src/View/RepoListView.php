@@ -26,7 +26,7 @@ class RepoListView
 
     public function renderList()
     {
-        $returnString = "<div>";
+        $returnString = "<div><h2>List of all repositories:</h2>";
 
         foreach ($this->repoList->getList() as $repo) {
 

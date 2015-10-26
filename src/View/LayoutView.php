@@ -24,7 +24,9 @@ class LayoutView
           <body>
             <h1>Committr</h1>
 
-            '. (!$isLoggedIn ? $loginView->response($isLoggedIn) : $repoListView->renderList()) .'
+            '. $loginView->response($isLoggedIn) .'
+
+            '. ($isLoggedIn ? $repoListView->renderList() : "") .'
 
           </body>
         </html>
