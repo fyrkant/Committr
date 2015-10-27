@@ -29,7 +29,8 @@ class CommitListView
     {
         $parentRepoName = $this->commitList->getParentRepoName();
 
-        $returnString = "<h2>List of commits in repository $parentRepoName</h2><ul>";
+        $returnString = "<p><a href=\"?\">Back to repository list.</a></p>
+                         <h2>List of commits in repository $parentRepoName</h2><ul>";
 
         foreach ($this->commitList->getCommitList() as $commit) {
             $message = $commit->getMessage();
@@ -38,6 +39,7 @@ class CommitListView
             $URL = $commit->getURL();
 
             $html = "<li>
+                       <p><strong>SHA:</strong> $sha</p>
                        <p><strong>Comment:</strong> <em>$message</em></p>
                        <p><strong>Date: </strong> $dateTime</p>
                        <p><a href=\"$URL\">Link to commit</a></p>

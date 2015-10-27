@@ -28,9 +28,11 @@ class RepoListView
     {
         if ($this->repoList->hasCommitList()) {
             $commitListView = new CommitListView($this->repoList->getCommitList());
+
             return $commitListView->renderListHTML();
         } else {
-            $returnString = "<h2>List of all repositories:</h2><ul>";
+            $returnString = "<h2>List of all repositories:</h2>
+                             <p>Click on repository name to see list of commits.</p><ul>";
 
             foreach ($this->repoList->getList() as $repo) {
 

@@ -65,27 +65,23 @@ class MainController
                 $this->loginView->setMessageKey("Logout");
                 $this->loginView->redirect();
             }
-        }
+        } else {
 
+            if ($this->loginView->userWantToAuthenticate()) {
+                $this->loginView->githubRedirect();
+            }
 
-        if ($this->loginView->userHasOAuthCode() && !$isLoggedIn) {
-            $code = $this->loginView->getOAuthCode();
+            if ($this->loginView->userHasOAuthCode()) {
+                $code = $this->loginView->getOAuthCode();
 
-            $user = $this->api->authenticateAndGetUser($code);
-            $user->setUserClient($currentUser);
+                $user = $this->api->authenticateAndGetUser($code);
+                $user->setUserClient($currentUser);
 
-            $this->loginModel->login($user);
-            $this->loginView->setMessageKey("Login");
-            $this->loginView->redirect();
+                $this->loginModel->login($user);
+                $this->loginView->setMessageKey("Login");
+                $this->loginView->redirect();
+            }
 
-
-//            var_dump($user);
-//            die();
-        }
-
-
-        if ($this->loginView->userWantToAuthenticate()) {
-            $this->loginView->githubRedirect();
         }
 
     }
