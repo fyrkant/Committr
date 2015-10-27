@@ -9,7 +9,6 @@
 namespace Committr\Controller;
 
 
-use Committr\Model\CommitList;
 use Committr\Model\DAL\GithubAPI;
 use Committr\Model\DAL\MongoDAL;
 use Committr\Model\LoginModel;
@@ -107,7 +106,7 @@ class MainController
                 }
 
                 $sha = $this->loginView->getNewPostCommitSHA();
-                $this->api->populateCommitList($this->repoList->getCommitList(), $user, explode("_", $sha)[1]);
+                $this->api->populateCommitList($this->repoList->getCommitList(), $user, explode("_::_", $sha)[1]);
                 $this->isWriting = true;
             }
 

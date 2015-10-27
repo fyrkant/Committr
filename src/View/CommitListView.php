@@ -9,6 +9,7 @@
 namespace Committr\View;
 
 
+use Committr\Model\Commit;
 use Committr\Model\CommitList;
 
 class CommitListView
@@ -25,6 +26,9 @@ class CommitListView
         $this->commitList = $commitList;
     }
 
+    /**
+     * @return string
+     */
     public function render()
     {
         $parentRepoName = $this->commitList->getParentRepoName();
@@ -32,12 +36,13 @@ class CommitListView
         $returnString = "<p><a href=\"?\">Back to repository list.</a></p>
                          <h2>List of commits in repository $parentRepoName</h2><ul>";
 
+        /** @var Commit $commit */
         foreach ($this->commitList->getCommitList() as $commit) {
             $message = $commit->getMessage();
             $sha = $commit->getSha();
             $dateTime = $commit->getDateTime();
             $URL = $commit->getURL();
-            $getText = $sha ."_" . $parentRepoName;
+            $getText = $sha ."_::_" . $parentRepoName;
 
             $html = "<li>
                        <p><strong>SHA:</strong> $sha</p>

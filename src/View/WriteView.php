@@ -45,7 +45,7 @@ class WriteView
 
         $sha = $this->getSHAGet();
         $baseCommit = $this->commitList->findWithSHA($sha);
-        $repoName = explode("_", $sha)[1];
+        $repoName = explode("_::_", $sha)[1];
 
         $message = $baseCommit->getMessage();
         $dateTime = $baseCommit->getDateTime();
@@ -93,7 +93,7 @@ class WriteView
     public function getNewPost()
     {
         $sha = $this->getSHAGet();
-        $parentRepoName = explode("_", $sha)[1];
+        $parentRepoName = explode("_::_", $sha)[1];
 
         $title = $this->getInput(self::$title);
         $content = $this->getInput(self::$content);
