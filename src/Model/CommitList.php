@@ -52,7 +52,7 @@ class CommitList
 
     public function findWithSHA($sha)
     {
-        $arrayed = explode("_", $sha);
+        $arrayed = explode("_::_", $sha);
         array_pop($arrayed);
         $sha  = implode("", $arrayed);
 
