@@ -24,7 +24,6 @@ class Messenger
         "Saved"        => "Post successfully saved."
     ];
 
-
     /**
      * @return string
      */
