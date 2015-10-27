@@ -42,6 +42,7 @@ class CommitListView
             $sha = $commit->getSha();
             $dateTime = $commit->getDateTime();
             $URL = $commit->getURL();
+
             $getText = $sha ."_::_" . $parentRepoName;
 
             $html = "<li>
