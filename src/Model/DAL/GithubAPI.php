@@ -9,16 +9,15 @@
 namespace Committr\Model\DAL;
 
 
+use Committr\Model\Commit;
+use Committr\Model\CommitList;
 use Committr\Model\Repo;
 use Committr\Model\RepoList;
 use Committr\Model\User;
 
 class GithubAPI
 {
-
-    private $data;
     private $username;
-    private $repos;
 
     public function __construct()
     {
@@ -132,7 +131,7 @@ class GithubAPI
         return $user;
     }
 
-    public function getPayload($username, $isInitial)
+    public function getPayload($username, $repoName = "")
     {
         $this->username = $username;
 
@@ -140,10 +139,10 @@ class GithubAPI
 
         $urlToUse = null;
 
-        if ($isInitial) {
+        if ($repoName == "") {
             $urlToUse = "https://api.github.com/users/" . $this->username . "/repos";
         } else {
-            $urlToUse = "https://api.github.com/repos/" . $this->username . "/repos";
+            $urlToUse = "https://api.github.com/repos/" . $this->username . "/" . $repoName . "/commits";
         }
         try {
             $curlHandle = curl_init();
@@ -171,8 +170,6 @@ class GithubAPI
 
         }
 
-        $this->data = $content;
-
         return $content;
 
     }
@@ -180,18 +177,42 @@ class GithubAPI
 
     public function populateRepoList(RepoList $repoList, User $user)
     {
-        $this->getPayload($user->getName(), true);
+        $payload = $this->getPayload($user->getName());
 
-        $JSON = json_decode($this->data, 1);
+        $JSON = json_decode($payload, 1);
 
         foreach ($JSON as $repo) {
+
             $name = $repo["name"];
             $description = $repo["description"];
             $url = $repo["html_url"];
+
             $toSave = new Repo($name, $description, $url);
 
             $repoList->addToList($toSave);
         }
+    }
+
+    public function populateCommitList(CommitList $commitList, User $user, $repoName)
+    {
+        $payload = $this->getPayload($user->getName(), $repoName);
+
+        $JSON = json_decode($payload, 1);
+
+        foreach ($JSON as $commit) {
+
+            $message = $commit["commit"]["message"];
+            $sha = $commit["sha"];
+            $dateTime = $commit["commit"]["author"]["date"];
+            $URL = $commit["html_url"];
+
+            $commitToSave = new Commit($message, $sha, $dateTime, $URL);
+
+            $commitList->addToList($commitToSave);
+        }
+
+        $commitList->setParentRepoName($repoName);
+
     }
 
 

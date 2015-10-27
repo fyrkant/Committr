@@ -17,6 +17,7 @@ class LoginView
     private static $logout = "LoginView::Logout";
     private static $oauth = "LoginView::OAuth";
     private static $oauthGET = "code";
+    private static $repoGET = "repo";
     /**
      * @var
      */
@@ -85,6 +86,16 @@ class LoginView
     public function userWantsToLogOut()
     {
         return isset($_POST[ self::$logout ]);
+    }
+
+    public function userHasSelectedRepo()
+    {
+        return isset($_GET[ self::$repoGET ]);
+    }
+
+    public function getUserSelectedRepo()
+    {
+        return $_GET[ self::$repoGET ];
     }
 
     public function userHasOAuthCode()

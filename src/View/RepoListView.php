@@ -24,24 +24,33 @@ class RepoListView
         $this->repoList = $repoList;
     }
 
-    public function renderList()
+    public function renderListHTML()
     {
-        $returnString = "<div><h2>List of all repositories:</h2>";
+        if ($this->repoList->hasCommitList()) {
+            $commitListView = new CommitListView($this->repoList->getCommitList());
+            return $commitListView->renderListHTML();
+        } else {
+            $returnString = "<h2>List of all repositories:</h2><ul>";
 
-        foreach ($this->repoList->getList() as $repo) {
+            foreach ($this->repoList->getList() as $repo) {
 
-            $title = $repo->getTitle();
-            $description = $repo->getDescription();
-            $link = $repo->getURL();
+                $title = $repo->getTitle();
+                $description = strlen($repo->getDescription()) > 0 ? $repo->getDescription() : "This repository has no despriction text.";
+                $link = $repo->getURL();
 
-            $html = "<h3>$title</h3><p>$description<a href='$link'>Link to repo</a></p>";
+                $html = "<li>
+                           <h3><a href=\"?repo=$title\">$title</a></h3>
+                           <p><strong>Description:</strong> $description</p>
+                           <p><a href='$link'>Link to repo</a></p>
+                         </li>";
 
-            $returnString .= $html;
+                $returnString .= $html;
+            }
+
+            $returnString .= "</ul>";
+
+            return $returnString;
         }
-
-        $returnString .= "</div>";
-
-        return $returnString;
     }
 
 }

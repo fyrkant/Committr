@@ -26,7 +26,7 @@ class LayoutView
 
             '. $loginView->response($isLoggedIn) .'
 
-            '. ($isLoggedIn ? $repoListView->renderList() : "") .'
+            '. ($isLoggedIn ? $repoListView->renderListHTML() : "") .'
 
           </body>
         </html>

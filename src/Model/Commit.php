@@ -13,15 +13,25 @@ class Commit
 {
 
     private $message;
+    private $sha;
     private $dateTime;
     private $URL;
 
-    public function __construct($message, $dateTime, $URL)
+    public function __construct($message, $sha, $dateTime, $URL)
     {
 
         $this->message = $message;
+        $this->sha = $sha;
         $this->dateTime = $dateTime;
         $this->URL = $URL;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSha()
+    {
+        return $this->sha;
     }
 
     /**

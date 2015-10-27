@@ -16,10 +16,9 @@ $layout = new Committr\View\LayoutView();
 
 $loginModel = new \Committr\Model\LoginModel();
 
-//$api = new \Committr\Model\DAL\GithubAPI("mw222rs");
-//$dataTest = $api->getPayload(true);
+$commitList = new \Committr\Model\CommitList();
+$repoList = new \Committr\Model\RepoList($commitList);
 
-$repoList = new \Committr\Model\RepoList();
 $messenger = new \Committr\View\Messenger();
 $loginView = new \Committr\View\LoginView($messenger);
 
@@ -31,11 +30,5 @@ $isLoggedIn = $controller->getIsLoggedIn();
 $repoListView = new \Committr\View\RepoListView($repoList);
 
 $layout->renderPage($isLoggedIn, $loginView, $repoListView);
-//
-//foreach (json_decode($dataTest, 1) as $repo) {
-//    echo $repo['name'] . "<br />";
-//    echo $repo['description'] . "<br /><br />";
-//}
-//
-//
-//var_dump($dataTest);
+
+

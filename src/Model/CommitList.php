@@ -13,15 +13,33 @@ class CommitList
 {
 
     private $commitList;
+    private $parentRepoName;
 
     public function __construct()
     {
         $this->commitList = array();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getParentRepoName()
+    {
+        return $this->parentRepoName;
+    }
+
+    /**
+     * @param mixed $parentRepoName
+     */
+    public function setParentRepoName($parentRepoName)
+    {
+        $this->parentRepoName = $parentRepoName;
+    }
+
     public function addToList(Commit $commit)
     {
         $this->commitList[] = $commit;
+
     }
 
     /**

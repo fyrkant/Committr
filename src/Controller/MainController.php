@@ -9,6 +9,7 @@
 namespace Committr\Controller;
 
 
+use Committr\Model\CommitList;
 use Committr\Model\DAL\GithubAPI;
 use Committr\Model\LoginModel;
 use Committr\Model\RepoList;
@@ -43,23 +44,27 @@ class MainController
     {
         $currentUser = $this->loginView->getUserClient();
         $isLoggedIn = $this->loginModel->isLoggedIn($currentUser);
+
         $this->api = new GithubAPI();
 
         if ($isLoggedIn) {
 
+
             $user = $this->loginModel->getLoggedInUser();
-
             $this->api->populateRepoList($this->repoList, $user);
-        } else {
 
-        }
+            if ($this->loginView->userHasSelectedRepo()) {
+                $repoName = $this->loginView->getUserSelectedRepo();
 
+                $this->api->populateCommitList($this->repoList->getCommitList(), $user, $repoName);
 
+            }
 
-        if ($isLoggedIn && $this->loginView->userWantsToLogOut()) {
-            $this->loginModel->logOut();
-            $this->loginView->setMessageKey("Logout");
-            $this->loginView->redirect();
+            if ($this->loginView->userWantsToLogOut()) {
+                $this->loginModel->logOut();
+                $this->loginView->setMessageKey("Logout");
+                $this->loginView->redirect();
+            }
         }
 
 
