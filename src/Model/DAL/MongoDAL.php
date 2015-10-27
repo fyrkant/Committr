@@ -9,6 +9,9 @@
 namespace Committr\Model\DAL;
 
 
+use Committr\Model\Post;
+use Committr\Model\User;
+
 class MongoDAL
 {
 
@@ -33,11 +36,25 @@ class MongoDAL
         }
     }
 
-    public function postsExist($userName)
+    public function postsExist(User $user)
     {
-        var_dump( $this->db->selectCollection($userName)->findOne());
+        $something = $this->db->selectCollection($user->getName())->findOne();
 
-        return $this->db->selectCollection($userName)->find() != null;
+        return isset($something["title"]) === false;
     }
+
+    public function saveNewPost(User $user, Post $post)
+    {
+        $toSave = [
+            "title" => $post->getTitle(),
+            "content" => $post->getContent()
+        ];
+        $this->db->selectCollection($user->getName())->save($toSave);
+
+        //var_dump($this->db->selectCollection($user->getName())->find());
+
+    }
+
+
 
 }

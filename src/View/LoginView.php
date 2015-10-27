@@ -31,39 +31,44 @@ class LoginView
 
     public function response($isLoggedIn)
     {
-        $message = $this->messenger->getMessage();
-
         $response = null;
 
         if ($isLoggedIn) {
 
-            $response = $this->generateLogoutButton($message);
+            $response = $this->generateLogoutButton();
 
         } else {
 
-            $response = $this->generateLoginButton($message);
+            $response = $this->generateLoginButton();
         }
 
         return $response;
     }
 
-    private function generateLogoutButton($message)
+    private function generateLogoutButton()
     {
         return '
-        <form method="post">
-          <p>' . $message . '</p>
-          <input type="submit" name="' . self::$logout . '" value="Logout" />
+        <form method="post" class="form-inline down">
+            <div class="form-group">
+                <input class="btn btn-danger btn-lg down" type="submit" name="' . self::$logout . '" value="Logout" />
+            </div>
         </form>
         ';
     }
 
-    private function generateLoginButton($message)
+    private function generateLoginButton()
     {
         return '
-        <form method="post">
-          <p>' . $message . '</p>
-          <input type="submit" name="' . self::$oauth . '" value="Login with GitHub" />
-        </form>
+        <div class="jumbotron">
+            <h1>Don\'t wait, login now!</h1>
+            <p class="lead">Just press the button</p>
+            <form method="post" class="form-inline down">
+                <div class="form-group">
+                    <input class="btn btn-success btn-lg down" type="submit" name="' . self::$oauth . '" value="Login with GitHub" />
+                </div>
+            </form>
+        </div>
+
         ';
     }
 

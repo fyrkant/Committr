@@ -11,13 +11,18 @@ namespace Committr\View;
 
 class Messenger
 {
+
     private static $messageKeyPosition = "Messenger::MessageKey";
 
     private static $messages = [
-        "Login" => "Welcome ",
-        "Logout" => "Goodbye!"
+        "Login"        => "Welcome!",
+        "Logout"       => "Goodbye!",
+        "Unsanitary"   => "Hmm, I think you were doing something bad, stop it! Only clean input!",
+        "TitleEmpty"   => "Please enter a title to save new post.",
+        "ContentEmpty" => "Please enter some content to save a new post",
+        "AllEmpty"     => "Please enter a title and some content to save new post.",
+        "Saved"        => "Post successfully saved."
     ];
-
 
 
     /**

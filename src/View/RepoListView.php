@@ -25,12 +25,12 @@ class RepoListView
         $this->repoList = $repoList;
     }
 
-    public function renderListHTML()
+    public function render()
     {
         if ($this->repoList->hasCommitList()) {
             $commitListView = new CommitListView($this->repoList->getCommitList());
 
-            return $commitListView->renderListHTML();
+            return $commitListView->render();
         } else {
             $returnString = "<h2>List of all repositories:</h2>
                              <p>Click on repository name to see list of commits.</p><ul>";

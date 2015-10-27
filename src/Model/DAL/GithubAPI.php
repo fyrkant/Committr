@@ -17,8 +17,6 @@ use Committr\Model\User;
 
 class GithubAPI
 {
-    private $username;
-
     public function __construct()
     {
     }
@@ -35,36 +33,7 @@ class GithubAPI
 
         $oauth2TokenURL = "https://github.com/login/oauth/access_token";
 
-        $content = null;
-
-
-        try {
-            $curlHandle = curl_init();
-
-            if ($curlHandle === false) {
-                throw new \Exception("Failed to init cURL");
-            }
-
-            curl_setopt($curlHandle, CURLOPT_URL, $oauth2TokenURL);
-            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, $settings);
-            curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $headerSetting);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curlHandle, CURLOPT_USERAGENT, "committr");
-//            curl_setopt($curlHandle, CURLOPT_CONNECTTIMEOUT, 1);
-            $content = curl_exec($curlHandle);
-
-            if ($content === false) {
-                throw new \Exception(curl_error($curlHandle), curl_errno($curlHandle));
-            }
-            curl_close($curlHandle);
-        } catch (\Exception $e) {
-
-            trigger_error(sprintf('cURL failed with error #%d: %s',
-                $e->getCode(), $e->getMessage()),
-                E_USER_ERROR);
-
-        }
+        $content = $this->cURL($oauth2TokenURL, $settings, $headerSetting);
 
         $JSON = json_decode($content, 1);
 
@@ -83,33 +52,7 @@ class GithubAPI
 
         $userTokenURL = "https://api.github.com/user";
 
-        $content = null;
-        try {
-            $curlHandle = curl_init();
-
-            if ($curlHandle === false) {
-                throw new \Exception("Failed to init cURL");
-            }
-
-            curl_setopt($curlHandle, CURLOPT_URL, $userTokenURL);
-            curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $headerSettings);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curlHandle, CURLOPT_USERAGENT, "committr");
-//            curl_setopt($curlHandle, CURLOPT_CONNECTTIMEOUT, 1);
-            $content = curl_exec($curlHandle);
-
-            if ($content === false) {
-                throw new \Exception(curl_error($curlHandle), curl_errno($curlHandle));
-            }
-            curl_close($curlHandle);
-        } catch (\Exception $e) {
-
-            trigger_error(sprintf('cURL failed with error #%d: %s',
-                $e->getCode(), $e->getMessage()),
-                E_USER_ERROR);
-
-        }
+        $content = $this->cURL($userTokenURL, [], $headerSettings);
 
         $JSON = json_decode($content, 1);
 
@@ -131,44 +74,24 @@ class GithubAPI
         return $user;
     }
 
-    public function getPayload($username, $repoName = "")
+    public function getPayload(User $user, $repoName = "")
     {
-        $this->username = $username;
+        $username = $user->getName();
+        $token = $user->getToken();
 
-        $content = null;
+        $headerSettings = array(
+            "Authorization: token $token"
+        );
 
         $urlToUse = null;
 
         if ($repoName == "") {
-            $urlToUse = "https://api.github.com/users/" . $this->username . "/repos";
+            $urlToUse = "https://api.github.com/users/" . $username . "/repos";
         } else {
-            $urlToUse = "https://api.github.com/repos/" . $this->username . "/" . $repoName . "/commits";
+            $urlToUse = "https://api.github.com/repos/" . $username . "/" . $repoName . "/commits";
         }
-        try {
-            $curlHandle = curl_init();
 
-            if ($curlHandle === false) {
-                throw new \Exception("Failed to init cURL");
-            }
-
-            curl_setopt($curlHandle, CURLOPT_URL, $urlToUse);
-            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curlHandle, CURLOPT_USERAGENT, "committr");
-//            curl_setopt($curlHandle, CURLOPT_CONNECTTIMEOUT, 1);
-            $content = curl_exec($curlHandle);
-
-            if ($content === false) {
-                throw new \Exception(curl_error($curlHandle), curl_errno($curlHandle));
-            }
-            curl_close($curlHandle);
-        } catch (\Exception $e) {
-
-            trigger_error(sprintf('cURL failed with error #%d: %s',
-                $e->getCode(), $e->getMessage()),
-                E_USER_ERROR);
-
-        }
+        $content = $this->cURL($urlToUse, [], $headerSettings);
 
         return $content;
 
@@ -177,7 +100,7 @@ class GithubAPI
 
     public function populateRepoList(RepoList $repoList, User $user)
     {
-        $payload = $this->getPayload($user->getName());
+        $payload = $this->getPayload($user);
 
         $JSON = json_decode($payload, 1);
 
@@ -195,7 +118,7 @@ class GithubAPI
 
     public function populateCommitList(CommitList $commitList, User $user, $repoName)
     {
-        $payload = $this->getPayload($user->getName(), $repoName);
+        $payload = $this->getPayload($user, $repoName);
 
         $JSON = json_decode($payload, 1);
 
@@ -215,5 +138,70 @@ class GithubAPI
 
     }
 
+    public function findRepoNameWithCommitSHA(User $user, $sha)
+    {
+        $username = $user->getName();
+        $token = $user->getToken();
 
+        $headerSettings = array(
+            "Authorization: token $token"
+        );
+
+        $URL = "https://api.github.com/repos/" . $username . "/";
+
+
+        $found = $sha;
+
+        return $found;
+
+    }
+
+    /**
+     * @param $URL
+     * @param $settings
+     * @param $headerSettings
+     *
+     * @return mixed|null
+     */
+    public function cURL($URL, $settings, $headerSettings)
+    {
+        $content = null;
+
+        try {
+            $curlHandle = curl_init();
+
+            if ($curlHandle === false) {
+                throw new \Exception("Failed to init cURL");
+            }
+
+            curl_setopt($curlHandle, CURLOPT_URL, $URL);
+
+            if (count($settings) > 0) {
+                curl_setopt($curlHandle, CURLOPT_POSTFIELDS, $settings);
+            }
+
+            if (count($headerSettings)) {
+                curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $headerSettings);
+            }
+
+            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curlHandle, CURLOPT_USERAGENT, \AppSettings::GITHUB_API_USER_AGENT);
+//            curl_setopt($curlHandle, CURLOPT_CONNECTTIMEOUT, 1);
+            $content = curl_exec($curlHandle);
+
+            if ($content === false) {
+                throw new \Exception(curl_error($curlHandle), curl_errno($curlHandle));
+            }
+            curl_close($curlHandle);
+        } catch (\Exception $e) {
+
+            trigger_error(sprintf('cURL failed with error #%d: %s',
+                $e->getCode(), $e->getMessage()),
+                E_USER_ERROR);
+
+        }
+
+        return $content;
+    }
 }

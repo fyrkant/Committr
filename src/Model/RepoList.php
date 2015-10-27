@@ -59,5 +59,4 @@ class RepoList
     {
         return $this->list;
     }
-
 }

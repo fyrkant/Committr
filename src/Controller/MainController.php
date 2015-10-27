@@ -13,8 +13,10 @@ use Committr\Model\CommitList;
 use Committr\Model\DAL\GithubAPI;
 use Committr\Model\DAL\MongoDAL;
 use Committr\Model\LoginModel;
+use Committr\Model\PostList;
 use Committr\Model\RepoList;
 use Committr\View\LoginView;
+use Committr\View\WriteView;
 
 class MainController
 {
@@ -29,6 +31,14 @@ class MainController
 
 
     private $isWriting;
+    /**
+     * @var PostList
+     */
+    private $postList;
+    /**
+     * @var WriteView
+     */
+    private $writer;
 
     /**
      * @return mixed
@@ -51,12 +61,19 @@ class MainController
      */
     private $db;
 
-    public function __construct(RepoList $repoList, LoginView $loginView, LoginModel $loginModel, MongoDAL $db)
+    public function __construct(RepoList $repoList,
+                                PostList $postList,
+                                LoginView $loginView,
+                                WriteView $writer,
+                                LoginModel $loginModel,
+                                MongoDAL $db)
     {
         $this->repoList = $repoList;
+        $this->postList = $postList;
         $this->loginView = $loginView;
         $this->loginModel = $loginModel;
         $this->db = $db;
+        $this->writer = $writer;
     }
 
     public function doControl()
@@ -72,20 +89,27 @@ class MainController
             $user = $this->loginModel->getLoggedInUser();
             $this->api->populateRepoList($this->repoList, $user);
 
-//            if ($this->db->postsExist($user->getName())) {
-//                echo "no posts";
-//            } else {
-//                echo "some posts";
-//            }
+            if ($this->db->postsExist($user)) {
+                echo "no posts";
+            } else {
+                echo "some posts";
+            }
 
 
             if ($this->loginView->userWantsToWriteNewPost()) {
+
+                if ($this->writer->userWantsToSaveNewPost()) {
+                    $toSave = $this->writer->getNewPost();
+
+                    if ($toSave != false) {
+                        $this->db->saveNewPost($user, $toSave);
+                    }
+                }
+
                 $sha = $this->loginView->getNewPostCommitSHA();
-
+                $this->api->populateCommitList($this->repoList->getCommitList(), $user, explode("_", $sha)[1]);
                 $this->isWriting = true;
-
             }
-
 
             if ($this->loginView->userHasSelectedRepo()) {
                 $repoName = $this->loginView->getUserSelectedRepo();

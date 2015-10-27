@@ -9,19 +9,38 @@
 namespace Committr\Model;
 
 
+use Committr\Exceptions\AllEmptyException;
+use Committr\Exceptions\ContentEmptyException;
+use Committr\Exceptions\TitleEmptyException;
+use Committr\Exceptions\UnsanitaryException;
+
 class Post
 {
 
     /**
      * @var Commit
      */
-    private $commit;
+    private $parentRepoName;
     private $title;
     private $content;
 
-    public function __construct(Commit $commit, $title, $content)
+    public function __construct($parentRepoName, $title, $content)
     {
-        $this->commit = $commit;
+        if ($title == "" && $content == "") {
+            throw new AllEmptyException();
+        }
+        if ($title == "") {
+            throw new TitleEmptyException();
+        }
+        if ($content == "") {
+            throw new ContentEmptyException();
+        }
+
+        if (filter_var($title, FILTER_SANITIZE_STRING) !== $title || filter_var($content, FILTER_SANITIZE_STRING) !== $content) {
+            throw new UnsanitaryException();
+        }
+
+        $this->parentRepoName = $parentRepoName;
         $this->title = $title;
         $this->content = $content;
     }
@@ -29,9 +48,9 @@ class Post
     /**
      * @return Commit
      */
-    public function getCommit()
+    public function getParentRepoName()
     {
-        return $this->commit;
+        return $this->parentRepoName;
     }
 
     /**

@@ -25,7 +25,7 @@ class CommitListView
         $this->commitList = $commitList;
     }
 
-    public function renderListHTML()
+    public function render()
     {
         $parentRepoName = $this->commitList->getParentRepoName();
 
@@ -37,13 +37,14 @@ class CommitListView
             $sha = $commit->getSha();
             $dateTime = $commit->getDateTime();
             $URL = $commit->getURL();
+            $getText = $sha ."_" . $parentRepoName;
 
             $html = "<li>
                        <p><strong>SHA:</strong> $sha</p>
                        <p><strong>Comment:</strong> <em>$message</em></p>
                        <p><strong>Date: </strong> $dateTime</p>
                        <p><a href=\"$URL\">Link to commit</a></p>
-                       <p><a href=\"?newPost=$sha\">Create post based on this.</a></p>
+                       <p><a href=\"?newPost=$getText\">Create post based on this.</a></p>
                      </li>";
 
             $returnString .= $html;

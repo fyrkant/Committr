@@ -32,6 +32,14 @@ class User
     /**
      * @return mixed
      */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;

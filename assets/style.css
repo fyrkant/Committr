@@ -1,2 +1,6 @@
 body {
 }
+
+input[type=submit].down {
+    margin-top: 15px;
+}

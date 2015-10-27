@@ -14,10 +14,10 @@ class PostList
 
     private $list;
 
-    public function __construct($list)
+    public function __construct()
     {
 
-        $this->list = $list;
+        $this->list = array();
     }
 
     /**

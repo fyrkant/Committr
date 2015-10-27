@@ -50,4 +50,22 @@ class CommitList
         return $this->commitList;
     }
 
+    public function findWithSHA($sha)
+    {
+        $arrayed = explode("_", $sha);
+        array_pop($arrayed);
+        $sha  = implode("", $arrayed);
+
+        $found = null;
+
+        /** @var Commit $commit */
+        foreach ($this->commitList as $commit) {
+            if ($commit->getSha() === $sha) {
+                $found = $commit;
+            }
+        }
+
+        return $found;
+    }
+
 }

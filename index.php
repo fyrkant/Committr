@@ -12,17 +12,20 @@ if (\AppSettings::DEBUGGING) {
 
 $db = new Committr\Model\DAL\MongoDAL();
 
-$layout = new Committr\View\LayoutView();
 
 $loginModel = new \Committr\Model\LoginModel();
 
 $commitList = new \Committr\Model\CommitList();
 $repoList = new \Committr\Model\RepoList($commitList);
 
+$postList = new \Committr\Model\PostList();
 $messenger = new \Committr\View\Messenger();
+
+$writer = new \Committr\View\WriteView($commitList, $messenger);
+
 $loginView = new \Committr\View\LoginView($messenger);
 
-$controller = new \Committr\Controller\MainController($repoList, $loginView, $loginModel, $db);
+$controller = new \Committr\Controller\MainController($repoList, $postList, $loginView, $writer, $loginModel, $db);
 $controller->doControl();
 
 $isLoggedIn = $controller->getIsLoggedIn();
@@ -30,6 +33,7 @@ $isWriting = $controller->getIsWriting();
 
 $repoListView = new \Committr\View\RepoListView($repoList);
 
-$layout->renderPage($isLoggedIn, $isWriting, $loginView, $repoListView);
+$layout = new Committr\View\LayoutView($messenger);
+$layout->renderPage($isLoggedIn, $isWriting, $loginView, $repoListView, $writer);
 
 
