@@ -11,6 +11,7 @@ namespace Committr\Controller;
 
 use Committr\Model\CommitList;
 use Committr\Model\DAL\GithubAPI;
+use Committr\Model\DAL\MongoDAL;
 use Committr\Model\LoginModel;
 use Committr\Model\RepoList;
 use Committr\View\LoginView;
@@ -27,17 +28,35 @@ class MainController
     private $loginView;
 
 
+    private $isWriting;
+
+    /**
+     * @return mixed
+     */
+    public function getIsWriting()
+    {
+        return $this->isWriting;
+    }
+
+    /**
+     * @var GithubAPI
+     */
     private $api;
     /**
      * @var LoginModel
      */
     private $loginModel;
+    /**
+     * @var MongoDAL
+     */
+    private $db;
 
-    public function __construct(RepoList $repoList, LoginView $loginView, LoginModel $loginModel)
+    public function __construct(RepoList $repoList, LoginView $loginView, LoginModel $loginModel, MongoDAL $db)
     {
         $this->repoList = $repoList;
         $this->loginView = $loginView;
         $this->loginModel = $loginModel;
+        $this->db = $db;
     }
 
     public function doControl()
@@ -53,13 +72,27 @@ class MainController
             $user = $this->loginModel->getLoggedInUser();
             $this->api->populateRepoList($this->repoList, $user);
 
+//            if ($this->db->postsExist($user->getName())) {
+//                echo "no posts";
+//            } else {
+//                echo "some posts";
+//            }
+
+
+            if ($this->loginView->userWantsToWriteNewPost()) {
+                $sha = $this->loginView->getNewPostCommitSHA();
+
+                $this->isWriting = true;
+
+            }
+
+
             if ($this->loginView->userHasSelectedRepo()) {
                 $repoName = $this->loginView->getUserSelectedRepo();
 
                 $this->api->populateCommitList($this->repoList->getCommitList(), $user, $repoName);
 
             }
-
             if ($this->loginView->userWantsToLogOut()) {
                 $this->loginModel->logOut();
                 $this->loginView->setMessageKey("Logout");

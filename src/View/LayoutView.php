@@ -12,7 +12,7 @@ namespace Committr\View;
 class LayoutView
 {
 
-    public function renderPage($isLoggedIn, LoginView $loginView, RepoListView $repoListView)
+    public function renderPage($isLoggedIn, $isWriting, LoginView $loginView, RepoListView $repoListView)
     {
         echo '<!DOCTYPE html>
         <html>
@@ -26,7 +26,8 @@ class LayoutView
 
             '. $loginView->response($isLoggedIn) .'
 
-            '. ($isLoggedIn ? $repoListView->renderListHTML() : "") .'
+            '. ($isLoggedIn ? $repoListView->renderListHTML() :
+                $isWriting ?  :"") .'
 
           </body>
         </html>

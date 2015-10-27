@@ -27,10 +27,17 @@ class MongoDAL
                 . \AppSettings::MONGO_PASSWORD . "@"
                 . \AppSettings::MONGO_IP;
             $m = new \MongoClient($serverString);
-            $this->db = $m->selectDB("users")->selectCollection("creds");
+            $this->db = $m->selectDB("committr");
         } catch (\MongoConnectionException $e) {
             echo $e->getMessage();
         }
+    }
+
+    public function postsExist($userName)
+    {
+        var_dump( $this->db->selectCollection($userName)->findOne());
+
+        return $this->db->selectCollection($userName)->find() != null;
     }
 
 }

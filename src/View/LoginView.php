@@ -18,6 +18,7 @@ class LoginView
     private static $oauth = "LoginView::OAuth";
     private static $oauthGET = "code";
     private static $repoGET = "repo";
+    private static $newPostGET = "newPost";
     /**
      * @var
      */
@@ -106,6 +107,16 @@ class LoginView
     public function getOAuthCode()
     {
         return $_GET[ self::$oauthGET ];
+    }
+
+    public function userWantsToWriteNewPost()
+    {
+        return isset($_GET[ self::$newPostGET ]);
+    }
+
+    public function getNewPostCommitSHA()
+    {
+        return $_GET[ self::$newPostGET ];
     }
 
     public function githubRedirect()

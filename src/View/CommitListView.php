@@ -43,7 +43,7 @@ class CommitListView
                        <p><strong>Comment:</strong> <em>$message</em></p>
                        <p><strong>Date: </strong> $dateTime</p>
                        <p><a href=\"$URL\">Link to commit</a></p>
-                       <p><a href=\"?sha=$sha\">Create post based on this.</a></p>
+                       <p><a href=\"?newPost=$sha\">Create post based on this.</a></p>
                      </li>";
 
             $returnString .= $html;
