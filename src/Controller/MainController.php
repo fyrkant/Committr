@@ -20,6 +20,7 @@ use Committr\View\WriteView;
 
 class MainController
 {
+
     /**
      * @var RepoList
      */
@@ -39,15 +40,6 @@ class MainController
      * @var WriteView
      */
     private $writer;
-
-    /**
-     * @return mixed
-     */
-    public function getIsWriting()
-    {
-        return $this->isWriting;
-    }
-
     /**
      * @var GithubAPI
      */
@@ -76,6 +68,14 @@ class MainController
         $this->writer = $writer;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getIsWriting()
+    {
+        return $this->isWriting;
+    }
+
     public function doControl()
     {
         $currentUser = $this->loginView->getUserClient();
@@ -100,11 +100,11 @@ class MainController
             $this->api->populateRepoList($this->repoList, $user);
 
             if ($this->loginView->userWantsToEditPost()) {
-                $sha = $this->loginView->getShaToEdit();
+                //$sha = $this->loginView->getShaToEdit();
                 echo "Sorry, this functionality has not been implemented yet.";
             }
             if ($this->loginView->userWantsToRemovePost()) {
-                $sha = $this->loginView->getShaToRemove();
+                //$sha = $this->loginView->getShaToRemove();
                 echo "Sorry, this functionality has not been implemented yet.";
             }
 
