@@ -60,13 +60,11 @@ class LayoutView
 
                     <div class="col-sm-12">
 
-                        '. ($isLoggedIn && $isWriting ? $writer->render() : "") .'
-
                         '. $postListView->render() .'
 
                         '. ($isLoggedIn && !$isWriting ? $repoListView->render() :"") .'
 
-
+                        '. ($isLoggedIn && $isWriting ? $writer->render() : "") .'
                     </div>
 
 

@@ -56,7 +56,7 @@ class WriteView
 
         return '<a class="btn btn-default" href="?repo=' . $repoName . '">Back to repo</a>
                 <h2>Write new post</h2>
-                <div class="col-sm-8">
+                <div class="col-sm-12">
                     <p class="text-muted">Based on:</p>
                     <blockquote class="blockquote-reverse">
                         <p><a href="' . $url . '">' . $message . '</a></p>
