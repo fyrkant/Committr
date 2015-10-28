@@ -51,25 +51,33 @@ class WriteView
         $dateTime = $baseCommit->getDateTime();
         $url = $baseCommit->getURL();
 
+        $inputTitle = $this->getInput(self::$title);
+        $inputContent = $this->getInput(self::$content);
+
         return '<a class="btn btn-default" href="?repo=' . $repoName . '">Back to repo</a>
                 <h2>Write new post</h2>
                 <div class="col-sm-8">
                     <p class="text-muted">Based on:</p>
                     <blockquote class="blockquote-reverse">
-                        <p><a href="'. $url .'">' . $message . '</a></p>
+                        <p><a href="' . $url . '">' . $message . '</a></p>
                         <footer>Commit date: ' . $dateTime . '</footer>
 
                     </blockquote>
 
                     <form method="post" class="form-group">
                       <label for="' . self::$title . '">Title</label>
-                      <input class="form-control" type="text" name="' . self::$title . '" id="' . self::$title . '" />
+                      <input class="form-control" type="text" name="' . self::$title . '" id="' . self::$title . '" value="'. $inputTitle .'" />
                       <label for="' . self::$content . '">Content</label>
-                      <textarea class="form-control" rows="6" type="text" name="' . self::$content . '" id="' . self::$content . '" ></textarea>
+                      <textarea class="form-control" rows="6" type="text" name="' . self::$content . '" id="' . self::$content . '" >'. $inputContent .'</textarea>
                       <input class="btn btn-success bl-lg pull-right" id="submit" type="submit" name="' . self::$save . '" value="Save" />
                     </form>
                 </div>
                 ';
+    }
+
+    public function getSHAGet()
+    {
+        return $_GET[ self::$sha ];
     }
 
     private function getInput($name)
@@ -79,11 +87,6 @@ class WriteView
         } else {
             return filter_var(trim($_POST[ $name ]), FILTER_SANITIZE_STRING);
         }
-    }
-
-    public function getSHAGet()
-    {
-        return $_GET[ self::$sha ];
     }
 
     public function userWantsToSaveNewPost()
