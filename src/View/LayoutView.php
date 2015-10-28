@@ -22,7 +22,7 @@ class LayoutView
         $this->messenger = $messenger;
     }
 
-    public function renderPage($isLoggedIn, $isWriting, LoginView $loginView, RepoListView $repoListView, WriteView $writer)
+    public function renderPage($isLoggedIn, $isWriting, LoginView $loginView, RepoListView $repoListView, PostListView $postListView, WriteView $writer)
     {
         $message = $this->messenger->getMessage();
 
@@ -59,6 +59,8 @@ class LayoutView
                     '. (!$isLoggedIn ? $loginView->response($isLoggedIn) : "") .'
 
                     <div class="col-sm-12">
+
+                        '. $postListView->render() .'
 
                         '. ($isLoggedIn && !$isWriting ? $repoListView->render() :"") .'
 

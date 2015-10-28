@@ -19,6 +19,9 @@ class LoginView
     private static $oauthGET = "code";
     private static $repoGET = "repo";
     private static $newPostGET = "newPost";
+    private static $showPosts = "show";
+    private static $editGet = "edit";
+    private static $removeGet = "remove";
     /**
      * @var
      */
@@ -119,9 +122,39 @@ class LoginView
         return isset($_GET[ self::$newPostGET ]);
     }
 
+    public function userWantsToSeePosts()
+    {
+        return isset($_GET[ self::$showPosts ]);
+    }
+
+    public function getUserToShow()
+    {
+        return $_GET[ self::$showPosts ];
+    }
+
     public function getNewPostCommitSHA()
     {
         return $_GET[ self::$newPostGET ];
+    }
+
+    public function userWantsToRemovePost()
+    {
+        return isset($_GET[ self::$removeGet ]);
+    }
+
+    public function userWantsToEditPost()
+    {
+        return isset($_GET[ self::$editGet ]);
+    }
+
+    public function getShaToEdit()
+    {
+        return $_GET[ self::$editGet ];
+    }
+
+    public function getShaToRemove()
+    {
+        return $_GET[ self::$removeGet ];
     }
 
     public function githubRedirect()

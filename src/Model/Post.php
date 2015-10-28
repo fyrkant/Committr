@@ -20,11 +20,11 @@ class Post
     /**
      * @var Commit
      */
-    private $parentRepoName;
+    private $commit;
     private $title;
     private $content;
 
-    public function __construct($parentRepoName, $title, $content)
+    public function __construct(Commit $commit, $title, $content)
     {
         if ($title == "" && $content == "") {
             throw new AllEmptyException();
@@ -40,7 +40,7 @@ class Post
             throw new UnsanitaryException();
         }
 
-        $this->parentRepoName = $parentRepoName;
+        $this->commit = $commit;
         $this->title = $title;
         $this->content = $content;
     }
@@ -48,9 +48,9 @@ class Post
     /**
      * @return Commit
      */
-    public function getParentRepoName()
+    public function getCommit()
     {
-        return $this->parentRepoName;
+        return $this->commit;
     }
 
     /**

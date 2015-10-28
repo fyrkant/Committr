@@ -33,7 +33,7 @@ class CommitListView
     {
         $parentRepoName = $this->commitList->getParentRepoName();
 
-        $returnString = "<p><a href=\"?\">Back to repository list.</a></p>
+        $returnString = "<p><a class=\"btn btn-default\" href=\"?\">Back to repository list.</a></p>
                          <h2>List of commits in repository $parentRepoName</h2><ul>";
 
         /** @var Commit $commit */
@@ -49,8 +49,8 @@ class CommitListView
                        <p><strong>SHA:</strong> $sha</p>
                        <p><strong>Comment:</strong> <em>$message</em></p>
                        <p><strong>Date: </strong> $dateTime</p>
-                       <p><a href=\"$URL\">Link to commit</a></p>
-                       <p><a href=\"?newPost=$getText\">Create post based on this.</a></p>
+                       <p><a class=\"btn btn-info\" href=\"$URL\">Link to commit</a></p>
+                       <p><a class=\"btn btn-primary\" href=\"?newPost=$getText\">Create post based on this.</a></p>
                      </li>";
 
             $returnString .= $html;

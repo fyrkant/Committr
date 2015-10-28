@@ -32,8 +32,9 @@ $isLoggedIn = $controller->getIsLoggedIn();
 $isWriting = $controller->getIsWriting();
 
 $repoListView = new \Committr\View\RepoListView($repoList);
+$postListView = new \Committr\View\PostListView($postList, $isLoggedIn);
 
 $layout = new Committr\View\LayoutView($messenger);
-$layout->renderPage($isLoggedIn, $isWriting, $loginView, $repoListView, $writer);
+$layout->renderPage($isLoggedIn, $isWriting, $loginView, $repoListView, $postListView, $writer);
 
 

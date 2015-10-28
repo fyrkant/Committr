@@ -14,6 +14,7 @@ use Committr\Model\DAL\MongoDAL;
 use Committr\Model\LoginModel;
 use Committr\Model\PostList;
 use Committr\Model\RepoList;
+use Committr\Model\User;
 use Committr\View\LoginView;
 use Committr\View\WriteView;
 
@@ -82,31 +83,50 @@ class MainController
 
         $this->api = new GithubAPI();
 
-        if ($isLoggedIn) {
+        if ($this->loginView->userWantsToSeePosts()) {
+            $userName = $this->loginView->getUserToShow();
 
-
-            $user = $this->loginModel->getLoggedInUser();
-            $this->api->populateRepoList($this->repoList, $user);
-
-            if ($this->db->postsExist($user)) {
-                echo "no posts";
-            } else {
-                echo "some posts";
+            if ($this->db->postsExist($userName)) {
+                $this->db->populatePostList($this->postList, $userName);
             }
 
+        }
+
+
+        if ($isLoggedIn) {
+            /** @var User $user */
+            $user = $this->loginModel->getLoggedInUser();
+
+            $this->api->populateRepoList($this->repoList, $user);
+
+            if ($this->loginView->userWantsToEditPost()) {
+                $sha = $this->loginView->getShaToEdit();
+                echo "Sorry, this functionality has not been implemented yet.";
+            }
+            if ($this->loginView->userWantsToRemovePost()) {
+                $sha = $this->loginView->getShaToRemove();
+                echo "Sorry, this functionality has not been implemented yet.";
+            }
+
+            if ($this->db->postsExist($user->getName())) {
+                $this->db->populatePostList($this->postList, $user->getName());
+            }
 
             if ($this->loginView->userWantsToWriteNewPost()) {
+
+                $sha = $this->loginView->getNewPostCommitSHA();
+                $this->api->populateCommitList($this->repoList->getCommitList(), $user, explode("_::_", $sha)[1]);
 
                 if ($this->writer->userWantsToSaveNewPost()) {
                     $toSave = $this->writer->getNewPost();
 
                     if ($toSave != false) {
                         $this->db->saveNewPost($user, $toSave);
+                        $this->loginView->setMessageKey("Saved");
+                        $this->loginView->redirect();
                     }
                 }
 
-                $sha = $this->loginView->getNewPostCommitSHA();
-                $this->api->populateCommitList($this->repoList->getCommitList(), $user, explode("_::_", $sha)[1]);
                 $this->isWriting = true;
             }
 

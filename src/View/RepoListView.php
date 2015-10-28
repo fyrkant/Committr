@@ -57,7 +57,7 @@ class RepoListView
         $html = "<li>
                            <h3><a href=\"?repo=$title\">$title</a></h3>
                            <p><strong>Description:</strong> $description</p>
-                           <p><a href='$link'>Link to repo</a></p>
+                           <p><a class=\"btn btn-primary\" href='$link'>Link to repo</a></p>
                          </li>";
 
         return $html;

@@ -49,13 +49,14 @@ class WriteView
 
         $message = $baseCommit->getMessage();
         $dateTime = $baseCommit->getDateTime();
+        $url = $baseCommit->getURL();
 
-        return '<a href="?repo=' . $repoName . '">Back to repo</a>
+        return '<a class="btn btn-default" href="?repo=' . $repoName . '">Back to repo</a>
                 <h2>Write new post</h2>
                 <div class="col-sm-8">
                     <p class="text-muted">Based on:</p>
                     <blockquote class="blockquote-reverse">
-                        <p>' . $message . '</p>
+                        <p><a href="'. $url .'">' . $message . '</a></p>
                         <footer>Commit date: ' . $dateTime . '</footer>
 
                     </blockquote>
@@ -93,13 +94,13 @@ class WriteView
     public function getNewPost()
     {
         $sha = $this->getSHAGet();
-        $parentRepoName = explode("_::_", $sha)[1];
+        $baseCommit = $this->commitList->findWithSHA($sha);
 
         $title = $this->getInput(self::$title);
         $content = $this->getInput(self::$content);
 
         try {
-            $toSave = new Post($parentRepoName, $title, $content);
+            $toSave = new Post($baseCommit, $title, $content);
 
             return $toSave;
         } catch (UnsanitaryException $e) {
