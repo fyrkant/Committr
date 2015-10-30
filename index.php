@@ -36,5 +36,3 @@ $postListView = new \Committr\View\PostListView($postList, $isLoggedIn);
 
 $layout = new Committr\View\LayoutView($messenger);
 $layout->renderPage($isLoggedIn, $isWriting, $loginView, $repoListView, $postListView, $writer);
-
-
